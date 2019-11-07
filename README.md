@@ -141,7 +141,7 @@ Commands starting with aws s3 will use the settings above. Any commands starting
 
 10. Upload 5 GB of data to S3 by uploading five 1 GB files in parallel. Record time to complete.    
   $ time seq 1 5 | parallel --will-cite -j 5 aws s3 cp 1GB.file s3://${bucket}/parallel/object{}.test
-     
+
 **Note**  
 
 1. These exercises showed that workloads can parallelized by breaking up a large object into chunks or by having smaller files.  
@@ -152,11 +152,10 @@ Commands starting with aws s3 will use the settings above. Any commands starting
 This exercise will use the aws s3 sync command to move 2,000 files totally 2 GB of data.    
 
 1. In the CLI for the instance, perform the sync using 1 thread.  Record time to complete.  
-
   $ aws configure set default.s3.max_concurrent_requests 1  
   $ time aws s3 sync /ebs/tutorial/data-1m/ s3://${bucket}/sync1/  
-2. Perform the sync using 10 threads.  Record time to complete.  
 
+2. Perform the sync using 10 threads.  Record time to complete.  
   $ aws configure set default.s3.max_concurrent_requests 10  
   $ time aws s3 sync /ebs/tutorial/data-1m/ s3://${bucket}/sync2/  
 
@@ -165,24 +164,24 @@ This exercise will use the aws s3 sync command to move 2,000 files totally 2 GB 
 This exercise will demonstrate how to increase the transactions per second(TPS) while moving small objects.  
 
 1. In the CLI for the instance, create a text file that represents a list of object ids.  
-
   $ seq 1 500 > object_ids  
   $ cat object_ids  
+
 2. Create a 1 KB file.   
-
   $ dd if=/dev/urandom of=1KB.file bs=1 count=0 seek=1K  
+
 3. Upload 500 1KB files to S3 using 1 thread.  Record time to complete.  
+  $ time parallel --will-cite -a object_ids -j 1 aws s3 cp 1KB.file s3://${bucket}/run1/{}
 
-  $ time parallel --will-cite -a object_ids -j 1 aws s3 cp 1KB.file s3://${bucket}/run1/{}  
 4. Upload 500 1KB files to S3 using 10 threads. Record time to complete.  
+  $ time parallel --will-cite -a object_ids -j 10 aws s3 cp 1KB.file s3://${bucket}/run2/{}   
 
-  $ time parallel --will-cite -a object_ids -j 10 aws s3 cp 1KB.file s3://${bucket}/run2/{}     
 5. Upload 500 1KB files to S3 using 50 threads. Record time to complete.  
+  $ time parallel --will-cite -a object_ids -j 50 aws s3 cp 1KB.file s3://${bucket}/run3/{}  
 
-  $ time parallel --will-cite -a object_ids -j 50 aws s3 cp 1KB.file s3://${bucket}/run3/{}    
 6. Upload 500 1KB files to S3 using 100 threads. Record time to complete.  
-
   $ time parallel --will-cite -a object_ids -j 100 aws s3 cp 1KB.file s3://${bucket}/run4/{}  
+
 **Note**  
 Going from 50 to 100 threads likely didn't result in higher performance.  For ease of demonstration we are using multiple instances of the AWS CLI to show a concept.  In the real world developers would create thread pools that are much more efficient than our demonstration method.  It is reasonable to assume that added threads should continue to add performance until another bottleneck like running out of CPU occurs.  
 
@@ -191,8 +190,8 @@ Going from 50 to 100 threads likely didn't result in higher performance.  For ea
 In this exercise we will demonstrate how to copy files from one location in S3 to another more efficiently.  
 
 1. In the CLI for the instance, run this command to download a 5 GB file from the S3 bucket that was uploaded in an earlier test and the upload to a different prefix.  Record time to complete.  
-
   $ time (aws s3 cp s3://$bucket/upload1.test 5GB.file; aws s3 cp 5GB.file s3://$bucket/copy/5GB.file)  
+
 2. Copy the file between S3 using a single command between locations. Record time to complete.  
   $ time aws s3 cp s3://$bucket/upload1.test s3://file s3://$bucket/copy/5GB-2.file)  
 
@@ -213,17 +212,18 @@ In this exercise we will demonstrate different methods of creating 1,024 files a
   $ mkdir -p /efs/tutorial/touch/${directory}  
   $ time for i in {1..1024}; do  
     touch /efs/tutorial/touch/${directory}/test-1.3-$i;  
-    done;  
-2. Run this command to generate 1,024 zero by files using multiple threads.  Record time to complete.    
+    done;
 
+2. Run this command to generate 1,024 zero by files using multiple threads.  Record time to complete.    
   $ directory=$(echo $(uuidgen)| grep -o ".\{6\}$")    
   $ mkdir -p /efs/tutorial/touch/${directory}    
-  $ time seq 1 1024 | parallel --will-cite -j 128 touch /efs/tutorial/touch/${directory}/test-1.4-{}  
-3. Run this command to generate 1,024 zero by files in multiple directories using multiple threads. Record time to complete.  
+  $ time seq 1 1024 | parallel --will-cite -j 128 touch /efs/tutorial/touch/${directory}/test-1.4-{}
 
+3. Run this command to generate 1,024 zero by files in multiple directories using multiple threads. Record time to complete.  
   $ directory=$(echo $(uuidgen)| grep -o ".\{6\}$")   
   $ mkdir -p /efs/tutorial/touch/${directory}/{1..32}  
-  $ time seq 1 32 | parallel --will-cite -j 32 touch /efs/tutorial/touch/${directory}/{}/test1.5{1..32}    
+  $ time seq 1 32 | parallel --will-cite -j 32 touch /efs/tutorial/touch/${directory}/{}/test1.5{1..32}
+
 **Note**  
 The best way to leverage the distributed data storage design of Amazon EFS is to use multiple threads and inodes in parallel.  
 
@@ -232,17 +232,17 @@ The best way to leverage the distributed data storage design of Amazon EFS is to
 In this exercise we will demonstrate how different I/O sizes and sync frequencies affects throughput to EFS.  
 
 1. In the CLI for the instance, Write a 2GB file to EFS using 1MB block size and sync once after each file. Record time to complete.  
+  $ time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=1M count=2048 status=progress conv=fsync  
 
- $ time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=1M count=2048 status=progress conv=fsync  
 2. Write a 2 GB file to EFS using 16MB block size and sync once after each file. Record time to complete.  
-
   $ time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=16M count=128 status=progress conv=fsync  
+
 3. Write a 2GB file to EFS using 1MB block size and sync after each block. Record time to complete.  
-
   $ time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=1M count=2048 status=progress oflag=sync  
-4. Write a 2 GB file to EFS using 16MB block size and sync after each block.  Record time to complete.    
 
+4. Write a 2 GB file to EFS using 16MB block size and sync after each block.  Record time to complete.    
   $ time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=16M count=128 status=progress oflag=sync  
+
 **Note**  
 Syncing after each block will dramatically decrease performance of the filesystem.  Best performance will be obtained by syncing after each file.  Block size has little impact to performance.  
 
@@ -252,10 +252,9 @@ This exercise will demonstrate how multi-threaded access improves throughput and
 
 1. Each command will write 2 GB of data to EFS using 1 MB block size.  
 2. Write to EFS using 4 threads and sync after each block. Record time to complete.  
+  $ time seq 0 3 | parallel --will-cite -j 4 dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N)-{} bs=1M count=512 oflag=sync
 
-  $ time seq 0 3 | parallel --will-cite -j 4 dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N)-{} bs=1M count=512 oflag=sync  
 3. Write to EFS using 16 threads and sync after each block. Record time to complete.  
-
   $ time seq 0 15 | parallel --will-cite -j 16 dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N)-{} bs=1M count=128 oflag=sync  
 
 **Note**
@@ -267,32 +266,32 @@ By parallelizing your writes to EFS by increasing the number of threads, you can
 In this section we will compare the performance of different file transfer utilities and EFS.  
 
 1. Review the data to transfer.  2,000 files and 2 GB of data.  Record time to complete.  
-
   $ du -csh /ebs/tutorial/data-1m/  
-  $ find /ebs/tutorial/data-1m/. -type f | wc -l  
-2. Transfer files from EBS to EFS using rsync  
+  $ find /ebs/tutorial/data-1m/. -type f | wc -l
 
+2. Transfer files from EBS to EFS using rsync  
   $ sudo su  
   $ sync && echo 3 > /proc/sys/vm/drop_caches  
   $ exit  
-  $ time rsync -r /ebs/tutorial/data-1m/ /efs/tutorial/rsync/    
-3. Transfer files from EBS to EFS using cp  
+  $ time rsync -r /ebs/tutorial/data-1m/ /efs/tutorial/rsync/   
 
+3. Transfer files from EBS to EFS using cp  
   $ sudo su  
   $ sync && echo 3 > /proc/sys/vm/drop_caches  
   $ exit  
   $ time cp -r /ebs/tutorial/data-1m/* /efs/tutorial/cp/  
+
 4. Set the $threads variable to 4 threads per CPU  
   $ threads=$(($(nproc --all) * 4))  
   $ echo $threads  
-5. Transfer files from EBS to EFS using fpsync  
 
-  $ sudo su  
+5. Transfer files from EBS to EFS using fpsync  
+$ sudo su  
   $ sync && echo 3 > /proc/sys/vm/drop_caches  
   $ exit  
   $ time fpsync -n ${threads} -v /ebs/tutorial/data-1m/ /efs/tutorial/fpsync/  
-6. Transfer files from EBS to EFS using cp + GNU Parallel  
 
+6. Transfer files from EBS to EFS using cp + GNU Parallel  
   $ sudo su  
   $ sync && echo 3 > /proc/sys/vm/drop_caches  
   $ exit  
