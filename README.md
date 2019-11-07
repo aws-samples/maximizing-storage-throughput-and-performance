@@ -116,7 +116,7 @@ Commands starting with aws s3 will use the settings above. Any commands starting
   $ cat ~/.aws/config  
 
   ![](/images/s3_perf_1.png)  
-  
+
 4. Run the following command to create a 5 GB file.  
   $ dd if=/dev/urandom of=5GB.file bs=1 count=0 seek=5G    
 
@@ -208,7 +208,6 @@ In this exercise we will demonstrate different methods of creating 1,024 files a
 
 1. In the CLI for the instance, run this command to generate 1,024 zero byte files.
     Record time to complete.  
-
   $ directory=$(echo $(uuidgen)| grep -o ".\{6\}$")    
   $ mkdir -p /efs/tutorial/touch/${directory}  
   $ time for i in {1..1024}; do  
