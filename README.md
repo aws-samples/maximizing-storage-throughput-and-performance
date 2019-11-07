@@ -73,8 +73,8 @@ FIO was automatically launched by the CloudFormation template.  We will use FIO 
   $ ps -ef | grep fio
 
   ![](/images/ebs_part1_1.png)
-2. From the AWS console, click  **Services**  and select  **EC2.**
-3. Select  **Instances**  from the menu on the left.
+2. From the AWS console, click  **Services**  and select  **EC2.**  
+3. Select  **Instances**  from the menu on the left.  
 4. Select the instance named **Storage_Performance_Workshop**.  
 
   ![](/images/ebs_part1_2.png)
@@ -361,7 +361,7 @@ To ensurer you don't continue to be billed for services in your account from thi
 1. In the CLI for the instance, remove objects from the S3 bucket.  
   $ aws configure set default.s3.max_concurrent_requests 20  
   $ aws s3 aws s3 rm s3://${bucket} --recursive  
-  
+
 2. From the AWS console, click  **Services**  and select  **CloudFormation.**  
 3. Select **StoragePerformanceWorkshop**.  
 4. Click **Delete**.  
