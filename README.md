@@ -94,32 +94,32 @@ FIO was automatically launched by the CloudFormation template.  We will use FIO 
 
 In the section we will demonstrate parallelization of a large object by breaking it into smaller chunks and increasing the number of threads used to transfer the object.
 
-1. In the CLI for the instance, run the following commands to setup the AWS CLI
+1. In the CLI for the instance, run the following commands to setup the AWS CLI  
 
-  $ aws configure
+  $ aws configure  
 
-  Leave Access Key and Secret Key blank, set the region to the region you deployed your CloudFormation template in , output format leave default.
+  Leave Access Key and Secret Key blank, set the region to the region you deployed your CloudFormation template in , output format leave default.  
 
-  ![](/images/aws_configure.png)
+  ![](/images/aws_configure.png)  
 
-2. Configure AWS CLI S3 settings, by running the following commands.
+2. Configure AWS CLI S3 settings, by running the following commands.  
 
   $ aws configure set default.s3.max_concurrent_requests 1  
   $ aws configure set default.s3.multipart_threshold 64MB  
   $ aws configure set default.s3.multipart_chunksize 16MB  
 
 **Note**  
-Commands starting with aws s3 will use the settings above. Any commands starting with aws s3api will not.  aws s3 utilizes Transfer Manager which can optimize transfers.  aws s3api simply makes the specific api call you specified.
+Commands starting with aws s3 will use the settings above. Any commands starting with aws s3api will not.  aws s3 utilizes Transfer Manager which can optimize transfers.  aws s3api simply makes the specific api call you specified.  
 
-3. Verify settings match screenshot below.
+3. Verify settings match screenshot below.  
 
-  $ cat ~/.aws/config
+  $ cat ~/.aws/config  
 
   ![](/images/s3_perf_1.png)  
-4. Run the following command to create a 5 GB file.
-  $ dd if=/dev/urandom of=5GB.file bs=1 count=0 seek=5G  
+4. Run the following command to create a 5 GB file.  
+  $ dd if=/dev/urandom of=5GB.file bs=1 count=0 seek=5G    
 
-5. Upload a 5 GB file to the S3 bucket using 1 thread.  Record time to complete.  
+5. Upload a 5 GB file to the S3 bucket using 1 thread.  Record time to complete.   
   $ time aws s3 cp 5GB.file s3://${bucket}/upload1.test   
 
 6. Upload a 5 GB file to the S3 bucket using 2 threads. Record time to complete.  
@@ -140,7 +140,7 @@ Commands starting with aws s3 will use the settings above. Any commands starting
   $ dd if=/dev/urandom of=1GB.file bs=1 count=0 seek=1G  
 
 10. Upload 5 GB of data to S3 by uploading five 1 GB files in parallel. Record time to complete.    
-  $ time seq 1 5 | parallel --will-cite -j 5 aws s3 cp 1GB.file s3://${bucket}/parallel/object{}.test
+  $ time seq 1 5 | parallel --will-cite -j 5 aws s3 cp 1GB.file s3://${bucket}/parallel/object{}.test  
 
 **Note**  
 
