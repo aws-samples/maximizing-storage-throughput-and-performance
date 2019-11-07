@@ -331,10 +331,10 @@ Not all file transfer utilities are created equal. File systems are distributed 
 13. Click **Close.**  
 14. Go back to your SSH session.  Check output of fio, you should see the increase in IOPS. ctrl-a d to exit screen.  
 15. Verify larger volume is seen by instance  
-
   $ lsblk  
 
   ![](/images/ebs_part2_2.png)  
+
 16. Resize the filesystem.  The increase in IOPs is available right away, but you would need to resize the filesystem to use the added capacity.  
 
   $ sudo umount /ebsperftest  
