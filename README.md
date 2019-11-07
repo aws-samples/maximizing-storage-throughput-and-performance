@@ -83,12 +83,12 @@ FIO was automatically launched by the CloudFormation template.  We will use FIO 
   ![](/images/ebs_part1_3.png)
 6. In the pop up window, click the **EBS ID**.
 
-  ![](/images/ebs_part1_4.png)
-7. Click on the **Monitoring** tab.
-8. There are two graphs of interest: Read Throughput and Burst Balance.
-   1. Read Throughput should be at 3000 OPS until the Burst Balance is not exhausted.
-   2. Burst Balance will start out at 100% and will decrease steadily over the next 30 minutes.  
-9. We will come back to EBS performance later, giving the Burst Balance a chance to be exhausted.
+  ![](/images/ebs_part1_4.png)  
+7. Click on the **Monitoring** tab.  
+8. There are two graphs of interest: Read Throughput and Burst Balance.  
+   1. Read Throughput should be at 3000 OPS until the Burst Balance is not exhausted.  
+   2. Burst Balance will start out at 100% and will decrease steadily over the next 30 minutes.   
+9. We will come back to EBS performance later, giving the Burst Balance a chance to be exhausted.  
 
 ## S3 Performance- Optimize Throughput of Large Files
 
