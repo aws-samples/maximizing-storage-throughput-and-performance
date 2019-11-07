@@ -336,20 +336,18 @@ Not all file transfer utilities are created equal. File systems are distributed 
   ![](/images/ebs_part2_2.png)  
 
 16. Resize the filesystem.  The increase in IOPs is available right away, but you would need to resize the filesystem to use the added capacity.  
-
   $ sudo umount /ebsperftest  
   $ sudo resize2fs /dev/nvme1n1  
   $ sudo mount /ebsperftest  
 
 17. Verify filesystem is using 100 GB volume.
-
   $ df -h  
 
 18. Run the following command to ensure FIO is running on the instance.  Output should be similar to below.  
-
   $ ps -ef | grep fio  
 
 ![](/images/ebs_part1_1.png)  
+
 19. Allow fio to continue to run for several more minutes to allow graphs to update.  
 20. Click on the **Monitoring** tab.  
 21. Refresh graphs. Burst balance will no longer report any values due to the volume being IO1 now.  Read Throughput should be at 5,000 IOPS  
