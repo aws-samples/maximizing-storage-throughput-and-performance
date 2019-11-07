@@ -116,6 +116,7 @@ Commands starting with aws s3 will use the settings above. Any commands starting
   $ cat ~/.aws/config  
 
   ![](/images/s3_perf_1.png)  
+  
 4. Run the following command to create a 5 GB file.  
   $ dd if=/dev/urandom of=5GB.file bs=1 count=0 seek=5G    
 
