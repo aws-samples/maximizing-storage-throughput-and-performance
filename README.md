@@ -211,8 +211,8 @@ In this exercise we will demonstrate different methods of creating 1,024 files a
   $ directory=$(echo $(uuidgen)| grep -o ".\{6\}$")    
   $ mkdir -p /efs/tutorial/touch/${directory}  
   $ time for i in {1..1024}; do  
-    touch /efs/tutorial/touch/${directory}/test-1.3-$i;  
-    done;
+  $ touch /efs/tutorial/touch/${directory}/test-1.3-$i;  
+  $ done;
 
 2. Run this command to generate 1,024 zero by files using multiple threads.  Record time to complete.    
   $ directory=$(echo $(uuidgen)| grep -o ".\{6\}$")    
@@ -359,11 +359,11 @@ Not all file transfer utilities are created equal. File systems are distributed 
 To ensurer you don't continue to be billed for services in your account from this workshop follow the steps below to remove all resources created ruing the workshop.  
 
 1. In the CLI for the instance, remove objects from the S3 bucket.  
-
   $ aws configure set default.s3.max_concurrent_requests 20  
   $ aws s3 aws s3 rm s3://${bucket} --recursive  
-11. From the AWS console, click  **Services**  and select  **CloudFormation.**  
-12. Select **StoragePerformanceWorkshop**.  
-13. Click **Delete**.  
-14. Click **Delete stack**.  
-15. It will take a few minutes to delete everything.  Refresh the page to see an updated status.   **StoragePerformanceWorkshop** will be removed from the list if everything has been deleted correctly.  
+  
+2. From the AWS console, click  **Services**  and select  **CloudFormation.**  
+3. Select **StoragePerformanceWorkshop**.  
+4. Click **Delete**.  
+5. Click **Delete stack**.  
+6. It will take a few minutes to delete everything.  Refresh the page to see an updated status.   **StoragePerformanceWorkshop** will be removed from the list if everything has been deleted correctly.  
