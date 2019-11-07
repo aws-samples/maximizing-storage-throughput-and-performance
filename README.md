@@ -305,13 +305,14 @@ Not all file transfer utilities are created equal. File systems are distributed 
 2. Select  **Instances**  from the menu on the left.  
 3. Select the instance named **Storage_Performance_Workshop**.  
 
-  ![](/images/ebs_part1_2.png)
+  ![](/images/ebs_part1_2.png)  
 4. Click on **/dev/sdb** in the lower pane by Block devices.  
 
-  ![](/images/ebs_part1_3.png)
+  ![](/images/ebs_part1_3.png)  
 5. In the pop up window, click the **EBS ID**.  
 
-  ![](/images/ebs_part1_4.png)
+  ![](/images/ebs_part1_4.png)  
+
 6. Click on the **Monitoring** tab.  
 7. There are two graphs of interest: Read Throughput and Burst Balance.  
    1. Read Throughput should be at 100 OPS now.  
