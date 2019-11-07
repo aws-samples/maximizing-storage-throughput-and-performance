@@ -117,32 +117,31 @@ Commands starting with aws s3 will use the settings above. Any commands starting
 
   ![](/images/s3_perf_1.png)  
 4. Run the following command to create a 5 GB file.
-
   $ dd if=/dev/urandom of=5GB.file bs=1 count=0 seek=5G  
+
 5. Upload a 5 GB file to the S3 bucket using 1 thread.  Record time to complete.  
-
   $ time aws s3 cp 5GB.file s3://${bucket}/upload1.test   
-6. Upload a 5 GB file to the S3 bucket using 2 threads. Record time to complete.  
 
+6. Upload a 5 GB file to the S3 bucket using 2 threads. Record time to complete.  
   $ aws configure set default.s3.max_concurrent_requests 2  
   $ time aws s3 cp 5GB.file s3://${bucket}/upload2.test  
-7. Upload a 5 GB file to the S3 bucket using 10 threads. Record time to complete.  
 
+7. Upload a 5 GB file to the S3 bucket using 10 threads. Record time to complete.  
   $ aws configure set default.s3.max_concurrent_requests 10  
   $ time aws s3 cp 5GB.file s3://${bucket}/upload3.test  
-8. Upload a 5 GB file to the S3 bucket using 20 threads. Record time to complete.  
 
+8. Upload a 5 GB file to the S3 bucket using 20 threads. Record time to complete.  
   $ aws configure set default.s3.max_concurrent_requests 20   
   $ time aws s3 cp 5GB.file s3://${bucket}/upload4.test  
 
   At some point the AWS CLI will limit the performance that can be achieved.  This is likely the case if you didn't see any performance increase between 10 and 20 threads.  
 
 9. Run the following command to create a 1 GB file.  
-
   $ dd if=/dev/urandom of=1GB.file bs=1 count=0 seek=1G  
-10. Upload 5 GB of data to S3 by uploading five 1 GB files in parallel. Record time to complete.    
 
-  $ time seq 1 5 | parallel --will-cite -j 5 aws s3 cp 1GB.file s3://${bucket}/parallel/object{}.test  
+10. Upload 5 GB of data to S3 by uploading five 1 GB files in parallel. Record time to complete.    
+  $ time seq 1 5 | parallel --will-cite -j 5 aws s3 cp 1GB.file s3://${bucket}/parallel/object{}.test
+     
 **Note**  
 
 1. These exercises showed that workloads can parallelized by breaking up a large object into chunks or by having smaller files.  
