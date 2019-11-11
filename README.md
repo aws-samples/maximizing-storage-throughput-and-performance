@@ -52,7 +52,7 @@ In this workshop you learn how to obtain higher levels of performance with EBS, 
 
 1. From the AWS console, click  **Services**  and select  **EC2.**  
 2. Select  **Instances**  from the menu on the left.  
-3. Wait until the state of the S3_Workshop_Instance01 instance  shows as _running_ and all Status Checks have completed (i.e. **not** in _Initializing_ state).  
+3. Wait until the state of the **Storage_Performance_Workshop** instance  shows as _running_ and all Status Checks have completed (i.e. **not** in _Initializing_ state).  
 4. Right-click on the **S3_Workshop_Instance01** instance and select  **Connect** from the menu.  
 5. From the dialog box, select the EC2 Instance Connect option, as shown below:
 
@@ -69,7 +69,7 @@ Note: The SSH session will disconnect after a period of inactivity. If your sess
 
 FIO was automatically launched by the CloudFormation template.  We will use FIO to exhaust the burst credits on the 1 GB GP2 volume.
 
-1. Run the following command to ensure FIO is running on the instance.  Output should be similar to below.
+1. Run the following command to ensure FIO is running on the instance.  Output should be similar to below.  
   $ ps -ef | grep fio
 
   ![](/images/ebs_part1_1.png)
@@ -85,7 +85,7 @@ FIO was automatically launched by the CloudFormation template.  We will use FIO 
 
   ![](/images/ebs_part1_4.png)  
 7. Click on the **Monitoring** tab.  
-8. There are two graphs of interest: Read Throughput and Burst Balance.  
+8. There are two graphs of interest: Read Throughput and Burst Balance.  You may need to click on the graph to see any data as there is likely only one data point so far.  
    1. Read Throughput should be at 3000 OPS until the Burst Balance is not exhausted.  
    2. Burst Balance will start out at 100% and will decrease steadily over the next 30 minutes.   
 9. We will come back to EBS performance later, giving the Burst Balance a chance to be exhausted.  
@@ -113,7 +113,7 @@ Commands starting with aws s3 will use the settings above. Any commands starting
 
 3. Verify settings match screenshot below.  
 
-  $ cat ~/.aws/config  
+    $ cat ~/.aws/config  
 
   ![](/images/s3_perf_1.png)  
 
@@ -135,10 +135,12 @@ Commands starting with aws s3 will use the settings above. Any commands starting
   $ aws configure set default.s3.max_concurrent_requests 20   
   $ time aws s3 cp 5GB.file s3://${bucket}/upload4.test  
 
-  At some point the AWS CLI will limit the performance that can be achieved.  This is likely the case if you didn't see any performance increase between 10 and 20 threads.  
+  At some point the AWS CLI will limit the performance that can be achieved.  This is likely the case if you didn't see any performance increase between 10 and 20 threads.  This is a limitation of the CLI, increasing thread count to 100's using other software will continue to increase performance.  
 
 9. Run the following command to create a 1 GB file.  
-  $ dd if=/dev/urandom of=1GB.file bs=1 count=0 seek=1G  
+  $ dd if=/dev/urandom of=1GB.file bs=1 count=0 seek=1G
+
+  Data can also be segmented into multiple pieces.  The next step will demonstrate moving 5 GB of data using multiple source files.
 
 10. Upload 5 GB of data to S3 by uploading five 1 GB files in parallel. Record time to complete.    
   $ time seq 1 5 | parallel --will-cite -j 5 aws s3 cp 1GB.file s3://${bucket}/parallel/object{}.test  
@@ -194,10 +196,10 @@ In this exercise we will demonstrate how to copy files from one location in S3 t
   $ time (aws s3 cp s3://$bucket/upload1.test 5GB.file; aws s3 cp 5GB.file s3://$bucket/copy/5GB.file)  
 
 2. Copy the file between S3 using a single command between locations. Record time to complete.  
-  $ time aws s3 cp s3://$bucket/upload1.test s3://file s3://$bucket/copy/5GB-2.file)  
+  $ time aws s3 cp s3://$bucket/upload1.test s3://$bucket/copy/5GB-2.file
 
 3. Use PUT COPY(copy-object) to move the file. Record time to complete.  
-  $ time aws s3api --copy-source $bucket/upload1.test --bucket $bucket --key copy/5GB-3.file  
+  $ time aws s3api copy-object --copy-source $bucket/upload1.test --bucket $bucket --key copy/5GB-3.file  
 
 **Note**  
 The first two commands required data to GET data from S3 back to the EC2 instance and then PUT the data back to S3 from the EC2 instance.  The third command copying data inside of S3 only.  This removes the consumption of EC2 instance network bandwidth making it much more efficient.  
@@ -258,8 +260,7 @@ This exercise will demonstrate how multi-threaded access improves throughput and
   $ time seq 0 15 | parallel --will-cite -j 16 dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N)-{} bs=1M count=128 oflag=sync  
 
 **Note**
-The distributed data storage design of EFS means that multi-threaded applications can drive substantial levels of aggregate throughput and IOPS.  
-By parallelizing your writes to EFS by increasing the number of threads, you can increase the overall throughput and IOPS to EFS.  
+The distributed data storage design of EFS means that multi-threaded applications can drive substantial levels of aggregate throughput and IOPS.  By parallelizing your writes to EFS by increasing the number of threads, you can increase the overall throughput and IOPS to EFS.  
 
 ## EFS Performance- Compare File Transfer Tools
 
@@ -359,7 +360,7 @@ To ensurer you don't continue to be billed for services in your account from thi
 
 1. In the CLI for the instance, remove objects from the S3 bucket.  
   $ aws configure set default.s3.max_concurrent_requests 20  
-  $ aws s3 aws s3 rm s3://${bucket} --recursive  
+  $ aws s3 rm s3://${bucket} --recursive  
 
 2. From the AWS console, click  **Services**  and select  **CloudFormation.**  
 3. Select **StoragePerformanceWorkshop**.  

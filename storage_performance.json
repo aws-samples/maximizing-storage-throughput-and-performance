@@ -288,7 +288,13 @@
                      [
                         "#!/bin/bash -xe\n",
                         "sudo yum update -y\n",
-                        "sudo yum install fio parallel fpart amazon-efs-utils git -y\n",
+                        "sudo yum install fio amazon-efs-utils git -y\n",
+                        "sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm\n",
+                        "sudo yum install fpart -y\n",
+                        "sudo wget https://ftpmirror.gnu.org/parallel/parallel-20191022.tar.bz2\n",
+                        "sudo bzip2 -dc parallel-20191022.tar.bz2 | tar xvf -\n",
+                        "cd parallel-20191022\n",
+                        "sudo ./configure && make && sudo make install\n",
                         "sudo mkfs -t ext4 /dev/nvme1n1\n",
                         "sudo mkdir /ebsperftest\n",
                         "sudo mount /dev/nvme1n1 /ebsperftest\n",
@@ -319,7 +325,7 @@
                            "Fn::Join":[
                               "",
                               [
-                                 "echo export bucket=",
+                                 "sudo echo export bucket=",
                                  {
                                     "Ref":"bucket01"
                                  },
