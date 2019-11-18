@@ -142,7 +142,7 @@ Commands starting with aws s3 will use the settings above. Any commands starting
 
   Data can also be segmented into multiple pieces.  The next step will demonstrate moving 5 GB of data using multiple source files.
 
-10. Upload 5 GB of data to S3 by uploading five 1 GB files in parallel. Record time to complete.    
+10. Upload 5 GB of data to S3 by uploading five 1 GB files in parallel.  The -j flag is the number of concurrent jobs to run.  This results in 100 total threads (20 from aws configure times 5 jobs). Record time to complete.    
   $ time seq 1 5 | parallel --will-cite -j 5 aws s3 cp 1GB.file s3://${bucket}/parallel/object{}.test  
 
 **Note**  
@@ -152,7 +152,7 @@ Commands starting with aws s3 will use the settings above. Any commands starting
 
 ## S3 Performance- Optimize the Sync command
 
-This exercise will use the aws s3 sync command to move 2,000 files totally 2 GB of data.    
+This exercise will use the aws s3 sync command to move 2,000 files totaling 2 GB of data.    
 
 1. In the CLI for the instance, perform the sync using 1 thread.  Record time to complete.  
   $ aws configure set default.s3.max_concurrent_requests 1  
@@ -356,7 +356,7 @@ Not all file transfer utilities are created equal. File systems are distributed 
 
 ## Clean Up Resources
 
-To ensurer you don't continue to be billed for services in your account from this workshop follow the steps below to remove all resources created ruing the workshop.  
+To ensure you don't continue to be billed for services in your account from this workshop follow the steps below to remove all resources created during the workshop.  
 
 1. In the CLI for the instance, remove objects from the S3 bucket.  
   $ aws configure set default.s3.max_concurrent_requests 20  
