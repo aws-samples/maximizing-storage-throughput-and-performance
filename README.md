@@ -202,7 +202,7 @@ In this exercise we will demonstrate how to copy files from one location in S3 t
   $ time aws s3api copy-object --copy-source $bucket/upload1.test --bucket $bucket --key copy/5GB-3.file  
 
 **Note**  
-The first two commands required data to GET data from S3 back to the EC2 instance and then PUT the data back to S3 from the EC2 instance.  The third command copying data inside of S3 only.  This removes the consumption of EC2 instance network bandwidth making it much more efficient.  
+The first command required data to GET data from S3 back to the EC2 instance and then PUT the data back to S3 from the EC2 instance.  The third command copying data inside of S3 only.  This removes the consumption of EC2 instance network bandwidth making it much more efficient.  
 
 ## EFS Performance- Optimize IOPS
 
