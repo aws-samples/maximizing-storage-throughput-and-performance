@@ -195,14 +195,14 @@ In this exercise we will demonstrate how to copy files from one location in S3 t
 1. In the CLI for the instance, run this command to download a 5 GB file from the S3 bucket that was uploaded in an earlier test and the upload to a different prefix.  Record time to complete.  
   $ time (aws s3 cp s3://$bucket/upload1.test 5GB.file; aws s3 cp 5GB.file s3://$bucket/copy/5GB.file)  
 
-2. Copy the file between S3 using a single command between locations. Record time to complete.  
-  $ time aws s3 cp s3://$bucket/upload1.test s3://$bucket/copy/5GB-2.file
+2. Use PUT COPY(copy-object) to move the file. Record time to complete.  
+  $ time aws s3api copy-object --copy-source $bucket/upload1.test --bucket $bucket --key copy/5GB-3.file
 
-3. Use PUT COPY(copy-object) to move the file. Record time to complete.  
-  $ time aws s3api copy-object --copy-source $bucket/upload1.test --bucket $bucket --key copy/5GB-3.file  
+3. Copy the file between S3 using a single command between locations. Record time to complete.  
+  $ time aws s3 cp s3://$bucket/upload1.test s3://$bucket/copy/5GB-2.file  
 
 **Note**  
-The first command required data to GET data from S3 back to the EC2 instance and then PUT the data back to S3 from the EC2 instance.  The third command copying data inside of S3 only.  This removes the consumption of EC2 instance network bandwidth making it much more efficient.  
+The first command required data to GET data from S3 back to the EC2 instance and then PUT the data back to S3 from the EC2 instance.  The second command uses a PUT COPY but is only single threaded.  The third command uses a PUT COPY as well, but also uses Transfer Manager which is multi-threaded depending on the AWS CLI configurations.  Both the second and third command perform the copy between S3 locations internal to S3.  This results in only API calls being made from the EC2 host and the data transfer bandwidth is done inside of S3 only.
 
 ## EFS Performance- Optimize IOPS
 
