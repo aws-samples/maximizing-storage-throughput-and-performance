@@ -196,10 +196,10 @@ In this exercise we will demonstrate how to copy files from one location in S3 t
   $ time (aws s3 cp s3://$bucket/upload1.test 5GB.file; aws s3 cp 5GB.file s3://$bucket/copy/5GB.file)  
 
 2. Use PUT COPY(copy-object) to move the file. Record time to complete.  
-  $ time aws s3api copy-object --copy-source $bucket/upload1.test --bucket $bucket --key copy/5GB-3.file
+  $ time aws s3api copy-object --copy-source $bucket/upload1.test --bucket $bucket --key copy/5GB-2.file
 
 3. Copy the file between S3 using a single command between locations. Record time to complete.  
-  $ time aws s3 cp s3://$bucket/upload1.test s3://$bucket/copy/5GB-2.file  
+  $ time aws s3 cp s3://$bucket/upload1.test s3://$bucket/copy/5GB-3.file  
 
 **Note**  
 The first command required to GET data from S3 back to the EC2 instance and then PUT the data back to S3 from the EC2 instance.  The second command uses a PUT COPY but is only single threaded.  The third command uses a PUT COPY as well, but also uses Transfer Manager which is multi-threaded depending on the AWS CLI configurations.  Both the second and third command perform the copy between S3 locations internal to S3.  This results in only API calls being made from the EC2 host and the data transfer bandwidth is done inside of S3 only.
