@@ -217,12 +217,12 @@ In this exercise we will demonstrate different methods of creating 1,024 files a
   $ done;
 
 2. Run this command to generate 1,024 zero by files using multiple threads.  Record time to complete.    
-  $ directory=$(echo $(uuidgen)| grep -o ".\{6\}$")    
+  $ directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")    
   $ mkdir -p /efs/tutorial/touch/${directory}    
   $ time seq 1 1024 | parallel --will-cite -j 128 touch /efs/tutorial/touch/${directory}/test-1.4-{}
 
 3. Run this command to generate 1,024 zero by files in multiple directories using multiple threads. Record time to complete.  
-  $ directory=$(echo $(uuidgen)| grep -o ".\{6\}$")   
+  $ directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")   
   $ mkdir -p /efs/tutorial/touch/${directory}/{1..32}  
   $ time seq 1 32 | parallel --will-cite -j 32 touch /efs/tutorial/touch/${directory}/{}/test1.5{1..32}
 
