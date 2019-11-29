@@ -210,7 +210,7 @@ In this exercise we will demonstrate different methods of creating 1,024 files a
 
 1. In the CLI for the instance, run this command to generate 1,024 zero byte files.
     Record time to complete.  
-  $ directory=$(echo $(uuidgen)| grep -o ".\{6\}$")    
+  $ directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")    
   $ mkdir -p /efs/tutorial/touch/${directory}  
   $ time for i in {1..1024}; do  
   $ touch /efs/tutorial/touch/${directory}/test-1.3-$i;  
