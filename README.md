@@ -53,7 +53,7 @@ In this workshop you learn how to obtain higher levels of performance with EBS, 
 1. From the AWS console, click  **Services**  and select  **EC2.**  
 2. Select  **Instances**  from the menu on the left.  
 3. Wait until the state of the **Storage_Performance_Workshop** instance  shows as _running_ and all Status Checks have completed (i.e. **not** in _Initializing_ state).  
-4. Right-click on the **S3_Workshop_Instance01** instance and select  **Connect** from the menu.  
+4. Right-click on the **Storage_Performance_Workshop** instance and select  **Connect** from the menu.  
 5. From the dialog box, select the EC2 Instance Connect option, as shown below:
 
   ![](/images/mod1ssh1.png)
