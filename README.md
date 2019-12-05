@@ -96,7 +96,9 @@ In the section we will demonstrate parallelization of a large object by breaking
 
 1. In the CLI for the instance, run the following commands to setup the AWS CLI  
 
-  $ aws configure  
+```
+aws configure  
+```
 
   Leave Access Key and Secret Key blank, set the region to the region you deployed your CloudFormation template in , output format leave default.  
 
@@ -104,9 +106,11 @@ In the section we will demonstrate parallelization of a large object by breaking
 
 2. Configure AWS CLI S3 settings, by running the following commands.  
 
-  $ aws configure set default.s3.max_concurrent_requests 1  
-  $ aws configure set default.s3.multipart_threshold 64MB  
-  $ aws configure set default.s3.multipart_chunksize 16MB  
+```
+aws configure set default.s3.max_concurrent_requests 1  
+aws configure set default.s3.multipart_threshold 64MB  
+aws configure set default.s3.multipart_chunksize 16MB  
+```
 
 **Note**  
 Commands starting with aws s3 will use the settings above. Any commands starting with aws s3api will not.  aws s3 utilizes Transfer Manager which can optimize transfers.  aws s3api simply makes the specific api call you specified.  
@@ -117,33 +121,47 @@ Commands starting with aws s3 will use the settings above. Any commands starting
 
   ![](/images/s3_perf_1.png)  
 
-4. Run the following command to create a 5 GB file.  
-  $ dd if=/dev/urandom of=5GB.file bs=1 count=0 seek=5G    
+4. Run the following command to create a 5 GB file. 
+``` 
+dd if=/dev/urandom of=5GB.file bs=1 count=0 seek=5G    
+```
 
 5. Upload a 5 GB file to the S3 bucket using 1 thread.  Record time to complete.   
-  $ time aws s3 cp 5GB.file s3://${bucket}/upload1.test   
+```
+time aws s3 cp 5GB.file s3://${bucket}/upload1.test   
+```
 
 6. Upload a 5 GB file to the S3 bucket using 2 threads. Record time to complete.  
-  $ aws configure set default.s3.max_concurrent_requests 2  
-  $ time aws s3 cp 5GB.file s3://${bucket}/upload2.test  
+```
+aws configure set default.s3.max_concurrent_requests 2  
+time aws s3 cp 5GB.file s3://${bucket}/upload2.test  
+```
 
 7. Upload a 5 GB file to the S3 bucket using 10 threads. Record time to complete.  
-  $ aws configure set default.s3.max_concurrent_requests 10  
-  $ time aws s3 cp 5GB.file s3://${bucket}/upload3.test  
+```
+aws configure set default.s3.max_concurrent_requests 10  
+time aws s3 cp 5GB.file s3://${bucket}/upload3.test  
+```
 
 8. Upload a 5 GB file to the S3 bucket using 20 threads. Record time to complete.  
-  $ aws configure set default.s3.max_concurrent_requests 20   
-  $ time aws s3 cp 5GB.file s3://${bucket}/upload4.test  
+```
+aws configure set default.s3.max_concurrent_requests 20   
+time aws s3 cp 5GB.file s3://${bucket}/upload4.test  
+```
 
   At some point the AWS CLI will limit the performance that can be achieved.  This is likely the case if you didn't see any performance increase between 10 and 20 threads.  This is a limitation of the CLI, increasing thread count to 100's using other software will continue to increase performance.  
 
 9. Run the following command to create a 1 GB file.  
-  $ dd if=/dev/urandom of=1GB.file bs=1 count=0 seek=1G
+```
+dd if=/dev/urandom of=1GB.file bs=1 count=0 seek=1G
+```
 
   Data can also be segmented into multiple pieces.  The next step will demonstrate moving 5 GB of data using multiple source files.
 
 10. Upload 5 GB of data to S3 by uploading five 1 GB files in parallel.  The -j flag is the number of concurrent jobs to run.  This results in 100 total threads (20 from aws configure times 5 jobs). Record time to complete.    
-  $ time seq 1 5 | parallel --will-cite -j 5 aws s3 cp 1GB.file s3://${bucket}/parallel/object{}.test  
+```
+time seq 1 5 | parallel --will-cite -j 5 aws s3 cp 1GB.file s3://${bucket}/parallel/object{}.test  
+```
 
 **Note**  
 
@@ -154,36 +172,52 @@ Commands starting with aws s3 will use the settings above. Any commands starting
 
 This exercise will use the aws s3 sync command to move 2,000 files totaling 2 GB of data.    
 
-1. In the CLI for the instance, perform the sync using 1 thread.  Record time to complete.  
-  $ aws configure set default.s3.max_concurrent_requests 1  
-  $ time aws s3 sync /ebs/tutorial/data-1m/ s3://${bucket}/sync1/  
+1. In the CLI for the instance, perform the sync using 1 thread.  Record time to complete. 
+``` 
+aws configure set default.s3.max_concurrent_requests 1  
+time aws s3 sync /ebs/tutorial/data-1m/ s3://${bucket}/sync1/  
+```
 
 2. Perform the sync using 10 threads.  Record time to complete.  
-  $ aws configure set default.s3.max_concurrent_requests 10  
-  $ time aws s3 sync /ebs/tutorial/data-1m/ s3://${bucket}/sync2/  
+```
+aws configure set default.s3.max_concurrent_requests 10  
+time aws s3 sync /ebs/tutorial/data-1m/ s3://${bucket}/sync2/  
+```
 
 ## S3 Performance- Optimize Small File Operations
 
 This exercise will demonstrate how to increase the transactions per second(TPS) while moving small objects.  
 
 1. In the CLI for the instance, create a text file that represents a list of object ids.  
-  $ seq 1 500 > object_ids  
-  $ cat object_ids  
+```
+seq 1 500 > object_ids  
+cat object_ids  
+```
 
 2. Create a 1 KB file.   
-  $ dd if=/dev/urandom of=1KB.file bs=1 count=0 seek=1K  
+```
+dd if=/dev/urandom of=1KB.file bs=1 count=0 seek=1K  
+```
 
-3. Upload 500 1KB files to S3 using 1 thread.  Record time to complete.  
-  $ time parallel --will-cite -a object_ids -j 1 aws s3 cp 1KB.file s3://${bucket}/run1/{}
+3. Upload 500 1KB files to S3 using 1 thread.  Record time to complete.
+```  
+time parallel --will-cite -a object_ids -j 1 aws s3 cp 1KB.file s3://${bucket}/run1/{}
+```
 
 4. Upload 500 1KB files to S3 using 10 threads. Record time to complete.  
-  $ time parallel --will-cite -a object_ids -j 10 aws s3 cp 1KB.file s3://${bucket}/run2/{}   
+```
+time parallel --will-cite -a object_ids -j 10 aws s3 cp 1KB.file s3://${bucket}/run2/{}   
+```
 
 5. Upload 500 1KB files to S3 using 50 threads. Record time to complete.  
-  $ time parallel --will-cite -a object_ids -j 50 aws s3 cp 1KB.file s3://${bucket}/run3/{}  
+```
+time parallel --will-cite -a object_ids -j 50 aws s3 cp 1KB.file s3://${bucket}/run3/{}  
+```
 
 6. Upload 500 1KB files to S3 using 100 threads. Record time to complete.  
-  $ time parallel --will-cite -a object_ids -j 100 aws s3 cp 1KB.file s3://${bucket}/run4/{}  
+```
+time parallel --will-cite -a object_ids -j 100 aws s3 cp 1KB.file s3://${bucket}/run4/{}  
+```
 
 **Note**  
 Going from 50 to 100 threads likely didn't result in higher performance.  For ease of demonstration we are using multiple instances of the AWS CLI to show a concept.  In the real world developers would create thread pools that are much more efficient than our demonstration method.  It is reasonable to assume that added threads should continue to add performance until another bottleneck like running out of CPU occurs.  
@@ -193,13 +227,19 @@ Going from 50 to 100 threads likely didn't result in higher performance.  For ea
 In this exercise we will demonstrate how to copy files from one location in S3 to another more efficiently.  
 
 1. In the CLI for the instance, run this command to download a 5 GB file from the S3 bucket that was uploaded in an earlier test and the upload to a different prefix.  Record time to complete.  
-  $ time (aws s3 cp s3://$bucket/upload1.test 5GB.file; aws s3 cp 5GB.file s3://$bucket/copy/5GB.file)  
+```
+time (aws s3 cp s3://$bucket/upload1.test 5GB.file; aws s3 cp 5GB.file s3://$bucket/copy/5GB.file)  
+```
 
 2. Use PUT COPY(copy-object) to move the file. Record time to complete.  
-  $ time aws s3api copy-object --copy-source $bucket/upload1.test --bucket $bucket --key copy/5GB-2.file
+```
+time aws s3api copy-object --copy-source $bucket/upload1.test --bucket $bucket --key copy/5GB-2.file
+```
 
 3. Copy the file between S3 using a single command between locations. Record time to complete.  
-  $ time aws s3 cp s3://$bucket/upload1.test s3://$bucket/copy/5GB-3.file  
+```
+time aws s3 cp s3://$bucket/upload1.test s3://$bucket/copy/5GB-3.file  
+```
 
 **Note**  
 The first command required to GET data from S3 back to the EC2 instance and then PUT the data back to S3 from the EC2 instance.  The second command uses a PUT COPY but is only single threaded.  The third command uses a PUT COPY as well, but also uses Transfer Manager which is multi-threaded depending on the AWS CLI configurations.  Both the second and third command perform the copy between S3 locations internal to S3.  This results in only API calls being made from the EC2 host and the data transfer bandwidth is done inside of S3 only.
@@ -209,22 +249,28 @@ The first command required to GET data from S3 back to the EC2 instance and then
 In this exercise we will demonstrate different methods of creating 1,024 files and compare the performance of each method.  
 
 1. In the CLI for the instance, run this command to generate 1,024 zero byte files.
-    Record time to complete.  
-  $ directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")    
-  $ mkdir -p /efs/tutorial/touch/${directory}  
-  $ time for i in {1..1024}; do  
-  $ touch /efs/tutorial/touch/${directory}/test-1.3-$i;  
-  $ done;
+    Record time to complete. 
+```
+directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")    
+mkdir -p /efs/tutorial/touch/${directory}  
+time for i in {1..1024}; do  
+touch /efs/tutorial/touch/${directory}/test-1.3-$i;  
+done;
+```
 
 2. Run this command to generate 1,024 zero by files using multiple threads.  Record time to complete.    
-  $ directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")    
-  $ mkdir -p /efs/tutorial/touch/${directory}    
-  $ time seq 1 1024 | parallel --will-cite -j 128 touch /efs/tutorial/touch/${directory}/test-1.4-{}
+```
+directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")    
+mkdir -p /efs/tutorial/touch/${directory}    
+time seq 1 1024 | parallel --will-cite -j 128 touch /efs/tutorial/touch/${directory}/test-1.4-{}
+```
 
 3. Run this command to generate 1,024 zero by files in multiple directories using multiple threads. Record time to complete.  
-  $ directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")   
-  $ mkdir -p /efs/tutorial/touch/${directory}/{1..32}  
-  $ time seq 1 32 | parallel --will-cite -j 32 touch /efs/tutorial/touch/${directory}/{}/test1.5{1..32}
+```
+directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")   
+mkdir -p /efs/tutorial/touch/${directory}/{1..32}  
+time seq 1 32 | parallel --will-cite -j 32 touch /efs/tutorial/touch/${directory}/{}/test1.5{1..32}
+```
 
 **Note**  
 The best way to leverage the distributed data storage design of Amazon EFS is to use multiple threads and inodes in parallel.  
@@ -234,16 +280,24 @@ The best way to leverage the distributed data storage design of Amazon EFS is to
 In this exercise we will demonstrate how different I/O sizes and sync frequencies affects throughput to EFS.  
 
 1. In the CLI for the instance, Write a 2GB file to EFS using 1MB block size and sync once after each file. Record time to complete.  
-  $ time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=1M count=2048 status=progress conv=fsync  
+```
+time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=1M count=2048 status=progress conv=fsync  
+```
 
 2. Write a 2 GB file to EFS using 16MB block size and sync once after each file. Record time to complete.  
-  $ time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=16M count=128 status=progress conv=fsync  
+```
+time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=16M count=128 status=progress conv=fsync  
+```
 
 3. Write a 2GB file to EFS using 1MB block size and sync after each block. Record time to complete.  
-  $ time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=1M count=2048 status=progress oflag=sync  
+```
+time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=1M count=2048 status=progress oflag=sync  
+```
 
 4. Write a 2 GB file to EFS using 16MB block size and sync after each block.  Record time to complete.    
-  $ time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=16M count=128 status=progress oflag=sync  
+```
+time dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N) bs=16M count=128 status=progress oflag=sync  
+```
 
 **Note**  
 Syncing after each block will dramatically decrease performance of the filesystem.  Best performance will be obtained by syncing after each file.  Block size has little impact to performance.  
@@ -254,10 +308,14 @@ This exercise will demonstrate how multi-threaded access improves throughput and
 
 1. Each command will write 2 GB of data to EFS using 1 MB block size.  
 2. Write to EFS using 4 threads and sync after each block. Record time to complete.  
-  $ time seq 0 3 | parallel --will-cite -j 4 dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N)-{} bs=1M count=512 oflag=sync
+```
+time seq 0 3 | parallel --will-cite -j 4 dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N)-{} bs=1M count=512 oflag=sync
+```
 
 3. Write to EFS using 16 threads and sync after each block. Record time to complete.  
-  $ time seq 0 15 | parallel --will-cite -j 16 dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N)-{} bs=1M count=128 oflag=sync  
+```
+time seq 0 15 | parallel --will-cite -j 16 dd if=/dev/zero of=/efs/tutorial/dd/2G-dd-$(date +%Y%m%d%H%M%S.%3N)-{} bs=1M count=128 oflag=sync  
+```
 
 **Note**
 The distributed data storage design of EFS means that multi-threaded applications can drive substantial levels of aggregate throughput and IOPS.  By parallelizing your writes to EFS by increasing the number of threads, you can increase the overall throughput and IOPS to EFS.  
@@ -267,36 +325,48 @@ The distributed data storage design of EFS means that multi-threaded application
 In this section we will compare the performance of different file transfer utilities and EFS.  
 
 1. Review the data to transfer.  2,000 files and 2 GB of data.  Record time to complete.  
-  $ du -csh /ebs/tutorial/data-1m/  
-  $ find /ebs/tutorial/data-1m/. -type f | wc -l
+```
+du -csh /ebs/tutorial/data-1m/  
+find /ebs/tutorial/data-1m/. -type f | wc -l
+```
 
 2. Transfer files from EBS to EFS using rsync  
-  $ sudo su  
-  $ sync && echo 3 > /proc/sys/vm/drop_caches  
-  $ exit  
-  $ time rsync -r /ebs/tutorial/data-1m/ /efs/tutorial/rsync/   
+```
+sudo su  
+sync && echo 3 > /proc/sys/vm/drop_caches  
+exit  
+time rsync -r /ebs/tutorial/data-1m/ /efs/tutorial/rsync/   
+```
 
 3. Transfer files from EBS to EFS using cp  
-  $ sudo su  
-  $ sync && echo 3 > /proc/sys/vm/drop_caches  
-  $ exit  
-  $ time cp -r /ebs/tutorial/data-1m/* /efs/tutorial/cp/  
+```
+sudo su
+sync && echo 3 > /proc/sys/vm/drop_caches
+exit
+time cp -r /ebs/tutorial/data-1m/* /efs/tutorial/cp/
+```
 
 4. Set the $threads variable to 4 threads per CPU  
-  $ threads=$(($(nproc --all) * 4))  
-  $ echo $threads  
+```
+threads=$(($(nproc --all) * 4))
+echo $threads
+```
 
 5. Transfer files from EBS to EFS using fpsync  
-$ sudo su  
-  $ sync && echo 3 > /proc/sys/vm/drop_caches  
-  $ exit  
-  $ time fpsync -n ${threads} -v /ebs/tutorial/data-1m/ /efs/tutorial/fpsync/  
+```
+sudo su
+sync && echo 3 > /proc/sys/vm/drop_caches  
+exit  
+time fpsync -n ${threads} -v /ebs/tutorial/data-1m/ /efs/tutorial/fpsync/  
+```
 
 6. Transfer files from EBS to EFS using cp + GNU Parallel  
-  $ sudo su  
-  $ sync && echo 3 > /proc/sys/vm/drop_caches  
-  $ exit  
-  $ time find /ebs/tutorial/data-1m/. -type f | parallel --will-cite -j ${threads} cp {} /efs/tutorial/parallelcp   
+```
+sudo su  
+sync && echo 3 > /proc/sys/vm/drop_caches  
+exit  
+time find /ebs/tutorial/data-1m/. -type f | parallel --will-cite -j ${threads} cp {} /efs/tutorial/parallelcp   
+```
 
 **Note**  
 Not all file transfer utilities are created equal. File systems are distributed across an unconstrained number of storage servers and this distributed data storage design means that multithreaded applications like fpsync, mcp, and GNU parallel can drive substantial levels of throughput and IOPS to EFS when compared to single-threaded applications.  
