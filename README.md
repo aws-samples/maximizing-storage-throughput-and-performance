@@ -389,7 +389,9 @@ Not all file transfer utilities are created equal. File systems are distributed 
    1. Read Throughput should be at 100 OPS now.  
    2. Burst Balance should be at 0%.  
 8. In the CLI for the instance, Look at output of fio job to see current IOPs.  
-  $ sudo screen -r
+```
+sudo screen -r
+```
 9. In the AWS console, click **Actions**, then select **Modify Volume**  
 10. In the pop up window configure the following values:  
 
@@ -408,15 +410,21 @@ Not all file transfer utilities are created equal. File systems are distributed 
   ![](/images/ebs_part2_2.png)  
 
 16. Resize the filesystem.  The increase in IOPs is available right away, but you would need to resize the filesystem to use the added capacity.  
-  $ sudo umount /ebsperftest  
-  $ sudo resize2fs /dev/nvme1n1  
-  $ sudo mount /ebsperftest  
+```
+sudo umount /ebsperftest  
+sudo resize2fs /dev/nvme1n1  
+sudo mount /ebsperftest  
+```
 
 17. Verify filesystem is using 100 GB volume.
-  $ df -h  
+```
+df -h  
+```
 
 18. Run the following command to ensure FIO is running on the instance.  Output should be similar to below.  
-  $ ps -ef | grep fio  
+```
+ps -ef | grep fio  
+```
 
 ![](/images/ebs_part1_1.png)  
 
@@ -429,8 +437,10 @@ Not all file transfer utilities are created equal. File systems are distributed 
 To ensure you don't continue to be billed for services in your account from this workshop follow the steps below to remove all resources created during the workshop.  
 
 1. In the CLI for the instance, remove objects from the S3 bucket.  
-  $ aws configure set default.s3.max_concurrent_requests 20  
-  $ aws s3 rm s3://${bucket} --recursive  
+```
+aws configure set default.s3.max_concurrent_requests 20  
+aws s3 rm s3://${bucket} --recursive  
+```
 
 2. From the AWS console, click  **Services**  and select  **CloudFormation.**  
 3. Select **StoragePerformanceWorkshop**.  
