@@ -405,7 +405,9 @@ sudo screen -r
 13. Click **Close.**  
 14. Go back to your SSH session.  Check output of fio, you should see the increase in IOPS. ctrl-a d to exit screen.  
 15. Verify larger volume is seen by instance  
-  $ lsblk  
+```
+lsblk  
+```
 
   ![](/images/ebs_part2_2.png)  
 
