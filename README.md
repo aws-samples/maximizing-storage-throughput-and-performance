@@ -175,6 +175,9 @@ This exercise will use the aws s3 sync command to move 2,000 files totaling 2 GB
   aws configure set default.s3.max_concurrent_requests 10  
   time aws s3 sync /ebs/tutorial/data-1m/ s3://${bucket}/sync2/  
   ```
+  
+  (The difference between sync and cp: sync is recursive by default, but copies only new and modified files - choose the right tool for the job)
+  
 ## S3 Performance- Optimize Small File Operations
 
 This exercise will demonstrate how to increase the transactions per second(TPS) while moving small objects.  
