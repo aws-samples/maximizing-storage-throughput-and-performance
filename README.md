@@ -88,6 +88,7 @@ FIO was automatically launched by the CloudFormation template.  We will use FIO 
 7. Click on the **Monitoring** tab.  
 8. There are two graphs of interest: Read Throughput and Burst Balance.  You may need to click on the graph to see any data as there is likely only one data point so far.  
    1. Read Throughput should be at 3000 OPS until the Burst Balance is not exhausted.  
+Read more about gp2 baseline and burst capabilities here: https://aws.amazon.com/ebs/features/
    2. Burst Balance will start out at 100% and will decrease steadily over the next 30 minutes.   
 9. We will come back to EBS performance later, giving the Burst Balance a chance to be exhausted.  
 
