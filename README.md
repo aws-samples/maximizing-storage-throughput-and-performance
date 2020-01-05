@@ -111,6 +111,7 @@ In the section we will demonstrate parallelization of a large object by breaking
   aws configure set default.s3.multipart_chunksize 16MB  
   ```
   You can read about S3 configuration here: https://docs.aws.amazon.com/cli/latest/topic/s3-config.html
+  
 **Note**  
 Commands starting with aws s3 will use the settings above. Any commands starting with aws s3api will not.  aws s3 utilizes Transfer Manager which can optimize transfers.  aws s3api simply makes the specific api call you specified.  
 
