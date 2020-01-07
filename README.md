@@ -145,6 +145,7 @@ Commands starting with aws s3 will use the settings above. Any commands starting
   time aws s3 cp 5GB.file s3://${bucket}/upload4.test  
   ```
   At some point the AWS CLI will limit the performance that can be achieved.  This is likely the case if you didn't see any performance increase between 10 and 20 threads.  This is a limitation of the CLI, increasing thread count to 100's using other software will continue to increase performance.  
+  (Note: The aws cli is written in python, and python is not really good at handling parallelism because of the GIL (Global Interpreter Lock), so even when using multi-part upload, you can't saturate a 25Gb/s link).
 
 9. Run the following command to create a 1 GB file.  
   ```
