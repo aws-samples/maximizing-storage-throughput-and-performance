@@ -258,7 +258,9 @@ In this exercise we will demonstrate different methods of creating 1,024 files a
   time seq 1 32 | parallel --will-cite -j 32 touch /efs/tutorial/touch/${directory}/{}/test1.5{1..32}
   ```
 **Note**  
-The best way to leverage the distributed data storage design of Amazon EFS is to use multiple threads and inodes in parallel.  
+The best way to leverage the distributed data storage design of Amazon EFS is to use multiple threads and inodes in parallel.
+
+Further reading on EFS and contention: https://aws.amazon.com/blogs/storage/how-to-test-drive-amazon-elastic-file-system/ 
 
 ## EFS Performance- I/O Sizes and Sync Frequency
 
