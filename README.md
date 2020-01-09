@@ -245,13 +245,13 @@ In this exercise we will demonstrate different methods of creating 1,024 files a
   touch /efs/tutorial/touch/${directory}/test-1.3-$i;  
   done;
   ```
-2. Run this command to generate 1,024 zero by files using multiple threads.  Record time to complete.    
+2. Run this command to generate 1,024 zero byte files using multiple threads.  Record time to complete.    
   ```
   directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")    
   mkdir -p /efs/tutorial/touch/${directory}    
   time seq 1 1024 | parallel --will-cite -j 128 touch /efs/tutorial/touch/${directory}/test-1.4-{}
   ```
-3. Run this command to generate 1,024 zero by files in multiple directories using multiple threads. Record time to complete.  
+3. Run this command to generate 1,024 zero byte files in multiple directories using multiple threads. Record time to complete.  
   ```
   directory=$(echo $(uuidgen)| grep -o ".\\{6\\}$")   
   mkdir -p /efs/tutorial/touch/${directory}/{1..32}  
