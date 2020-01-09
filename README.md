@@ -301,6 +301,8 @@ This exercise will demonstrate how multi-threaded access improves throughput and
 **Note**
 The distributed data storage design of EFS means that multi-threaded applications can drive substantial levels of aggregate throughput and IOPS.  By parallelizing your writes to EFS by increasing the number of threads, you can increase the overall throughput and IOPS to EFS.  
 
+Further reading (and tools): https://s3.amazonaws.com/aws-us-east-1/tutorial/efs-performance-tutorial.html
+
 ## EFS Performance- Compare File Transfer Tools
 
 In this section we will compare the performance of different file transfer utilities and EFS.  
