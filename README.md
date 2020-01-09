@@ -349,6 +349,9 @@ In this section we will compare the performance of different file transfer utili
 **Note**  
 Not all file transfer utilities are created equal. File systems are distributed across an unconstrained number of storage servers and this distributed data storage design means that multithreaded applications like fpsync, mcp, and GNU parallel can drive substantial levels of throughput and IOPS to EFS when compared to single-threaded applications.  
 
+Further reading: GNU Parallel: https://www.gnu.org/software/parallel/
+fpsync: https://manpages.ubuntu.com/manpages/bionic/man1/fpsync.1.html (note that fpsync uses rsync)
+
 ## EBS Performance Part 2
 1. From the AWS console, click  **Services**  and select  **EC2.**  
 2. Select  **Instances**  from the menu on the left.  
